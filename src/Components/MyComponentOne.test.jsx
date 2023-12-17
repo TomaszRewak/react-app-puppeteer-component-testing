@@ -1,4 +1,4 @@
-import { describe, it } from "../utils/puppeteer-testing";
+import { describe, it, beforeAll } from "../utils/puppeteer-testing";
 import MyComponentOne from "./MyComponentOne";
 
 describe("MyComponentOne", () => {
@@ -9,7 +9,7 @@ describe("MyComponentOne", () => {
 
     it("should render with text",
         () => {
-            return <MyComponentOne text="Hello world!!!!" />;
+            return <MyComponentOne text="Hello world!" />;
         },
         async page => {
             await page.waitForSelector(".my-component-one");

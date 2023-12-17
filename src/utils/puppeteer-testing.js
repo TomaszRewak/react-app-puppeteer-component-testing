@@ -7,16 +7,9 @@ const child_process = isTestServer ? require(['child_process'][0]) : null;
 const jest_globals = isTestServer ? require(['@jest/globals'][0]) : null;
 const puppeteer = isTestServer ? require(['puppeteer'][0]) : null;
 
-const killServer = () => {
-    try { child_process.execSync('kill $(lsof -t -i:3111)'); }
-    catch (error) { }
-}
-
-export function beforeAll(fn) {
-    if (isTestServer) {
-        return jest_globals.beforeAll(fn);
-    }
-}
+let browser = null;
+let page = null;
+let server = null;
 
 export function describe(name, fn) {
     contextName = name;
@@ -26,34 +19,45 @@ export function describe(name, fn) {
             fn();
 
             jest_globals.beforeAll(async () => {
-                killServer();
-
-                child_process.exec('npm start', {
+                server = child_process.spawn('npm', ['start'], {
                     cwd: process.cwd() + '/test-env',
                     env: {
                         ...process.env,
                         REACT_APP_FILE_NAME: module.parent.filename.replace(process.cwd() + '/', './'),
                         PORT: 3111
-                    }
+                    },
+                    stdio: ['ignore', 'ignore', 'ignore'],
+                    detached: true
                 });
 
-                const browser = await puppeteer.launch();
-                const page = await browser.newPage();
+                browser = await puppeteer.launch();
+                page = await browser.newPage();
 
-                while (true) {
+                for (let i = 0; i < 40; i++) {
                     try {
                         await page.goto(`http://localhost:3111`);
-                        await page.waitForSelector(".ready");
+                        await page.waitForSelector(".ready", { timeout: 2_000 });
                         break;
                     }
-                    catch (error) { }
+                    catch (error) {
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
                 }
 
-                await browser.close();
+                await page.close();
             }, 20_000);
 
-            jest_globals.afterAll(() => {
-                killServer();
+            jest_globals.beforeEach(async () => {
+                page = await browser.newPage();
+            });
+
+            jest_globals.afterEach(async () => {
+                await page.close();
+            });
+
+            jest_globals.afterAll(async () => {
+                await browser.close();
+                process.kill(-server.pid);
             });
         });
     }
@@ -68,16 +72,20 @@ export function it(name, factory, fn) {
 
     if (isTestServer) {
         return jest_globals.it(name, async () => {
-            const browser = await puppeteer.launch();
-
-            try {
-                const page = await browser.newPage();
-                await page.goto(`http://localhost:3111?${new URLSearchParams({ testName })}`);
-                await fn(page);
-            }
-            finally {
-                await browser.close();
-            }
+            await page.goto(`http://localhost:3111?${new URLSearchParams({ testName })}`);
+            await fn(page);
         });
+    }
+}
+
+export function beforeAll(fn) {
+    if (isTestServer) {
+        return jest_globals.beforeAll(fn);
+    }
+}
+
+export function afterAll(fn) {
+    if (isTestServer) {
+        return jest_globals.afterAll(fn);
     }
 }
