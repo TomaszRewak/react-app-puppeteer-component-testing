@@ -68,7 +68,7 @@ Copy over the `src/utils/puppeteer-testing.js` file from this repo into your pro
 └ package.json
 ```
 
-**5. Import the test utilities file into your test files**
+**5. Import the test utilities file into your react component test files**
 
 They will override the default jest functions.
 
