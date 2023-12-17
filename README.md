@@ -79,29 +79,29 @@ import { describe, it, beforeAll } from "../utils/puppeteer-testing";
 **6. Define your test cases**
 
 ```js
-describe("MyComponentTwo", () => {
+describe("my component one", () => {
     beforeAll(async () => {
-        const {toMatchImageSnapshot} = await import(["jest-image-snapshot"][0]);
+        const { toMatchImageSnapshot } = await import(["jest-image-snapshot"][0]);
         expect.extend({ toMatchImageSnapshot });
     });
 
-    it("radius 10",
+    it("should render with text",
         () => {
-            return <MyComponentTwo radius={10} />;
+            return <MyComponentOne text="World Hello!" />;
         },
         async page => {
-            await page.waitForSelector(".my-component-two");
-            const screenshot = await page.screenshot({clip: {x: 0, y: 0, width: 200, height: 200}});
+            await page.waitForSelector(".my-component-one");
+            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 200, height: 80 } });
             expect(screenshot).toMatchImageSnapshot();
         });
 
-    it("radius 100",
+    it("should render without text",
         () => {
-            return <MyComponentTwo radius={100} />;
+            return <MyComponentOne />;
         },
         async page => {
-            await page.waitForSelector(".my-component-two");
-            const screenshot = await page.screenshot({clip: {x: 0, y: 0, width: 200, height: 200}});
+            await page.waitForSelector(".my-component-one");
+            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 200, height: 80 } });
             expect(screenshot).toMatchImageSnapshot();
         });
 });
