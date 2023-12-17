@@ -1,3 +1,3 @@
 export default function MyComponentOne({ text }) {
-    return <div className="my-component-one">My component with text: {text}</div>;
+    return <button className="my-component-one">Button with text: {text}</button>;
 }

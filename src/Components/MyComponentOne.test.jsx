@@ -9,11 +9,11 @@ describe("MyComponentOne", () => {
 
     it("should render with text",
         () => {
-            return <MyComponentOne text="World hello!" />;
+            return <MyComponentOne text="▯▯▯▯▯▯▯▯▯!" />;
         },
         async page => {
             await page.waitForSelector(".my-component-one");
-            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 300, height: 100 } });
+            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 200, height: 80 } });
             expect(screenshot).toMatchImageSnapshot();
         });
 
@@ -23,7 +23,7 @@ describe("MyComponentOne", () => {
         },
         async page => {
             await page.waitForSelector(".my-component-one");
-            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 300, height: 100 } });
+            const screenshot = await page.screenshot({ clip: { x: 0, y: 0, width: 200, height: 80 } });
             expect(screenshot).toMatchImageSnapshot();
         });
 });
