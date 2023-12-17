@@ -1,3 +1,11 @@
+# 
+
+npm install --save puppeteer@18.1.0
+kill $(lsof -t -i:3111)
+react-scripts test --runInBand
+npm i --save-dev jest-image-snapshot
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
