@@ -1,7 +1,7 @@
 export const isTestServer = typeof jest !== 'undefined';
 
 export const componentFactories = {};
-let contextName = '';
+export const contextNames = [];
 
 const child_process = isTestServer ? require(['child_process'][0]) : null;
 const jest_globals = isTestServer ? require(['@jest/globals'][0]) : null;
@@ -12,11 +12,14 @@ let page = null;
 let server = null;
 
 export function describe(name, fn) {
-    contextName = name;
+    contextNames.push(name);
 
     if (isTestServer) {
         jest_globals.describe(name, () => {
             fn();
+
+            if (contextNames.length > 1)
+                return;
 
             jest_globals.beforeAll(async () => {
                 server = child_process.spawn('npm', ['start'], {
@@ -64,10 +67,12 @@ export function describe(name, fn) {
     else {
         fn();
     }
+
+    contextNames.pop();
 }
 
 export function it(name, factory, fn) {
-    const testName = contextName + '.' + name;
+    const testName = contextNames.join('.') + '.' + name;
     componentFactories[testName] = factory;
 
     if (isTestServer) {
