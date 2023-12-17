@@ -1,8 +1,26 @@
 # About
 
-This repository explains how to configure puppeteer with a default (non-ejected) react app to test individual components.
+This repository explains how to configure puppeteer with a default (non-ejected) react app in order to test individual react components.
 
-Please note that this repo is not a library, but a guide to help you configure your own react app.
+```js
+describe("MyComponentOne", () => {
+    it("should render with text",
+        () => {
+            return <MyComponentOne text="Hello World!" />;
+        },
+        async page => {
+            await page.waitForSelector(".my-component-one");
+            const text = await page.$eval(".my-component-one", el => el.innerHTML);
+            expect(text).toBe("Hello World!");
+        });
+});
+```
+
+Please note that this repo is not a library. It's simply a guide on how to configure puppeteer with your own react application (without any additional dependencies).
+
+## Why?
+
+The default react testing library allows you to test individual components based on their DOM structure. In most cases it's enough, but sometimes you might want to write regression tests that compare the actual component's appearance with a reference image. This is especially useful when creating components that heavily rely on the HTML5 canvas element.
 
 ## Setup
 
@@ -15,7 +33,7 @@ cd my-app
 
 **2. Install puppeteer**
 
-Install the puppeteer that's compatible with your version of react-scripts (in this case, 18.1.0) and other test dependencies you may need.
+Install the puppeteer that's compatible with your version of react-scripts (in this case: 18.1.0) and other test dependencies you may need.
 
 ```bash
 npm install --save-dev puppeteer@18.1.0
@@ -38,7 +56,7 @@ Copy over the `test-env` folder from this repo to your project root (just next t
 
 **4. Copy the test utilities file into your project**
 
-Copy over the `src/utils/puppeteer-testing.js` file from this repo to your project. You can place it anywhere in your `src` folder.\
+Copy over the `src/utils/puppeteer-testing.js` file from this repo into your project. You can place it anywhere in your `src` folder.
 
 ```
 ├ public
@@ -50,7 +68,7 @@ Copy over the `src/utils/puppeteer-testing.js` file from this repo to your proje
 └ package.json
 ```
 
-**5. Import the test utilities file into your tests**
+**5. Import the test utilities file into your test files**
 
 ```js
 import { describe, it, beforeAll } from "../utils/puppeteer-testing";
@@ -98,4 +116,11 @@ npm test
 <p>
   <img src="https://github.com/TomaszRewak/react-app-puppeteer-component-testing/blob/master/src/Components/__image_snapshots__/__diff_output__/my-component-two-test-jsx-my-component-two-radius-10-1-snap-diff.png?raw=true" width=400/>
 </p>
+
+## Good to know
+
+- The provided code works only within the linux environment (including WSL). It can be adjusted to work with other operating systems by editing the `prestart` script in the `test-env/package.json` file (though it has not been tested).
+- Your test files will be run both in the node environment and in the browser. In practice, the first callback of each test will be run in the browser, while the second one will be run in the node environment.
+- It's good to avoid importing any node-specific modules in the global scope of your test files (as it will cause errors in the browser environment).
+- It's best to obfuscate any imports that are not to be included in the browser environment (for example: `await import(["jest-image-snapshot"][0])`). This will prevent the browser from pre-fetching them.
 
