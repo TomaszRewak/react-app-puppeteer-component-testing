@@ -116,7 +116,7 @@ npm test
 **8. View your test results**
 
 <p>
-  <img src="https://github.com/TomaszRewak/react-app-puppeteer-component-testing/blob/master/src/Components/__image_snapshots__/__diff_output__/my-component-two-test-jsx-my-component-two-radius-10-1-snap-diff.png?raw=true" width=400/>
+  <img src="https://github.com/TomaszRewak/react-app-puppeteer-component-testing/blob/master/src/Components/__image_snapshots__/__diff_output__/my-component-one-test-jsx-my-component-one-should-render-with-text-1-snap-diff.png?raw=true" width=600/>
 </p>
 
 ## Good to know
