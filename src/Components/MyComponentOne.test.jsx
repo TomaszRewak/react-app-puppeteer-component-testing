@@ -9,7 +9,7 @@ describe("MyComponentOne", () => {
 
     it("should render with text",
         () => {
-            return <MyComponentOne text="Hello world!" />;
+            return <MyComponentOne text="World hello!" />;
         },
         async page => {
             await page.waitForSelector(".my-component-one");

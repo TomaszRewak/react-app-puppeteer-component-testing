@@ -9,7 +9,7 @@ describe("MyComponentTwo", () => {
 
     it("radius 10",
         () => {
-            return <MyComponentTwo radius={10} />;
+            return <MyComponentTwo radius={20} />;
         },
         async page => {
             await page.waitForSelector(".my-component-two");

@@ -1,9 +1,9 @@
 # 
 
-npm install --save puppeteer@18.1.0
 kill $(lsof -t -i:3111)
 react-scripts test --runInBand
-npm i --save-dev jest-image-snapshot
+npm install --save-dev jest-image-snapshot
+npm install --save-dev puppeteer@18.1.0
 
 
 # Getting Started with Create React App
