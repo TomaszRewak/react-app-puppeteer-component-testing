@@ -1,13 +1,12 @@
-import { describe, it } from "../utils/puppeteer-testing";
+import { describe, it, beforeAll } from "../utils/puppeteer-testing";
 import MyComponentTwo from "./MyComponentTwo";
 
-if (typeof jest !== "undefined") {
-    expect.extend({
-        toMatchImageSnapshot: require("jest-image-snapshot").toMatchImageSnapshot
-    });
-}
-
 describe("MyComponentTwo", () => {
+    beforeAll(async () => {
+        const {toMatchImageSnapshot} = await import(["jest-image-snapshot"][0]);
+        expect.extend({ toMatchImageSnapshot });
+    });
+
     it("radius 10",
         () => {
             return <MyComponentTwo radius={20} />;

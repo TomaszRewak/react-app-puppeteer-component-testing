@@ -1,24 +1,34 @@
-let hasJest = typeof jest !== 'undefined';
+export const isTestServer = typeof jest !== 'undefined';
 
 export const componentFactories = {};
 let contextName = '';
 
-function killServer() {
-    try { require('child_process').execSync('kill $(lsof -t -i:3111)'); }
+const child_process = isTestServer ? require(['child_process'][0]) : null;
+const jest_globals = isTestServer ? require(['@jest/globals'][0]) : null;
+const puppeteer = isTestServer ? require(['puppeteer'][0]) : null;
+
+const killServer = () => {
+    try { child_process.execSync('kill $(lsof -t -i:3111)'); }
     catch (error) { }
+}
+
+export function beforeAll(fn) {
+    if (isTestServer) {
+        return jest_globals.beforeAll(fn);
+    }
 }
 
 export function describe(name, fn) {
     contextName = name;
 
-    if (hasJest) {
-        require('@jest/globals').describe(name, () => {
+    if (isTestServer) {
+        jest_globals.describe(name, () => {
             fn();
 
-            require('@jest/globals').beforeAll(async () => {
+            jest_globals.beforeAll(async () => {
                 killServer();
 
-                require('child_process').exec('npm start', {
+                child_process.exec('npm start', {
                     cwd: process.cwd() + '/test-env',
                     env: {
                         ...process.env,
@@ -27,7 +37,7 @@ export function describe(name, fn) {
                     }
                 });
 
-                const browser = await require('puppeteer').launch();
+                const browser = await puppeteer.launch();
                 const page = await browser.newPage();
 
                 while (true) {
@@ -42,7 +52,7 @@ export function describe(name, fn) {
                 await browser.close();
             }, 20_000);
 
-            require('@jest/globals').afterAll(() => {
+            jest_globals.afterAll(() => {
                 killServer();
             });
         });
@@ -56,9 +66,9 @@ export function it(name, factory, fn) {
     const testName = contextName + '.' + name;
     componentFactories[testName] = factory;
 
-    if (hasJest) {
-        return require('@jest/globals').it(name, async () => {
-            const browser = await require('puppeteer').launch();
+    if (isTestServer) {
+        return jest_globals.it(name, async () => {
+            const browser = await puppeteer.launch();
 
             try {
                 const page = await browser.newPage();

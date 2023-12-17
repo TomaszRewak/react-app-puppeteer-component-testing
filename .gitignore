@@ -22,9 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# screenshot testing
-/test-env/src/src
-/test-env/node_modules
-
 # vscode
 .vscode
