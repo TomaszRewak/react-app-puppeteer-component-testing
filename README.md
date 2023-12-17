@@ -56,7 +56,7 @@ Copy over the `test-env` folder from this repo to your project root (just next t
 
 **4. Copy the test utilities file into your project**
 
-Copy over the `src/utils/puppeteer-testing.js` file from this repo into your project. You can place it anywhere in your `src` folder.
+Copy over the `src/utils/puppeteer-testing.js` file from this repo into your project.
 
 ```
 ├ public
