@@ -79,7 +79,7 @@ import { describe, it, beforeAll } from "../utils/puppeteer-testing";
 **6. Define your test cases**
 
 ```js
-describe("my component one", () => {
+describe("MyComponentOne", () => {
     beforeAll(async () => {
         const { toMatchImageSnapshot } = await import(["jest-image-snapshot"][0]);
         expect.extend({ toMatchImageSnapshot });
