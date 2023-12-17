@@ -70,6 +70,8 @@ Copy over the `src/utils/puppeteer-testing.js` file from this repo into your pro
 
 **5. Import the test utilities file into your test files**
 
+They will override the default jest functions.
+
 ```js
 import { describe, it, beforeAll } from "../utils/puppeteer-testing";
 ```
