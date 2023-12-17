@@ -1,78 +1,101 @@
-# 
+# About
 
-kill $(lsof -t -i:3111)
-react-scripts test --runInBand
-npm install --save-dev jest-image-snapshot
+This repository explains how to configure puppeteer with a default (non-ejected) react app to test individual components.
+
+Please note that this repo is not a library, but a guide to help you configure your own react app.
+
+## Setup
+
+**1. Create a new react app (or use an existing one)**
+
+```bash
+npx create-react-app my-app
+cd my-app
+```
+
+**2. Install puppeteer**
+
+Install the puppeteer that's compatible with your version of react-scripts (in this case, 18.1.0) and other test dependencies you may need.
+
+```bash
 npm install --save-dev puppeteer@18.1.0
+npm install --save-dev jest-image-snapshot
+```
 
+**3. Create the test environment in you project root**
 
-# Getting Started with Create React App
+Copy over the `test-env` folder from this repo to your project root (just next to the `src` folder).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```
+├ public
+├ src
+├ test-env
+│ ├ public
+│ ├ src
+│ └ package.json
+└ package.json
+```
 
-## Available Scripts
+**4. Copy the test utilities file into your project**
 
-In the project directory, you can run:
+Copy over the `src/utils/puppeteer-testing.js` file from this repo to your project. You can place it anywhere in your `src` folder.\
 
-### `npm start`
+```
+├ public
+├ src
+│ ├ utils
+│ │ └ puppeteer-testing.js
+│ └ index.js
+├ test-env
+└ package.json
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**5. Import the test utilities file into your tests**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```js
+import { describe, it, beforeAll } from "../utils/puppeteer-testing";
+```
 
-### `npm test`
+**6. Define your test cases**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```js
+describe("MyComponentTwo", () => {
+    beforeAll(async () => {
+        const {toMatchImageSnapshot} = await import(["jest-image-snapshot"][0]);
+        expect.extend({ toMatchImageSnapshot });
+    });
 
-### `npm run build`
+    it("radius 10",
+        () => {
+            return <MyComponentTwo radius={10} />;
+        },
+        async page => {
+            await page.waitForSelector(".my-component-two");
+            const screenshot = await page.screenshot({clip: {x: 0, y: 0, width: 200, height: 200}});
+            expect(screenshot).toMatchImageSnapshot();
+        });
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    it("radius 100",
+        () => {
+            return <MyComponentTwo radius={100} />;
+        },
+        async page => {
+            await page.waitForSelector(".my-component-two");
+            const screenshot = await page.screenshot({clip: {x: 0, y: 0, width: 200, height: 200}});
+            expect(screenshot).toMatchImageSnapshot();
+        });
+});
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**7. Run your tests**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm test
+```
 
-### `npm run eject`
+**8. View your test results**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<p>
+  <img src="https://github.com/TomaszRewak/react-app-puppeteer-component-testing/blob/master/src/Components/__image_snapshots__/__diff_output__/my-component-two-test-jsx-my-component-two-radius-10-1-snap-diff.png?raw=true" width=400/>
+</p>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
