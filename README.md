@@ -47,7 +47,7 @@ Copy over the `test-env` folder from this repo to your project root (just next t
 ```
 ├ public
 ├ src
-├ test-env
+├ test-env                     << Just copy it here
 │ ├ public
 │ ├ src
 │ └ package.json
@@ -62,7 +62,7 @@ Copy over the `src/utils/puppeteer-testing.js` file from this repo into your pro
 ├ public
 ├ src
 │ ├ utils
-│ │ └ puppeteer-testing.js
+│ │ └ puppeteer-testing.js     << Just copy it here
 │ └ index.js
 ├ test-env
 └ package.json
